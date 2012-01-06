@@ -5,8 +5,8 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia
-Epoch:           1
-Version:         290.06
+Epoch:           2
+Version:         275.43
 Release:         1%{?dist}.R
 Summary:         NVIDIA's proprietary display driver for NVIDIA graphic cards
 
@@ -49,6 +49,11 @@ Requires:        %{name}-libs-%{_target_cpu} = %{version}-%{release}
 #Requires(post):  chkconfig
 Requires(post):  ldconfig
 #Requires(preun): chkconfig
+
+%if 0%{?fedora} == 16
+Conflicts:       selinux-policy-targeted < 3.10.0-53
+%endif
+
 
 
 Provides:        nvidia-kmod-common = %{?epoch}:%{version}
@@ -259,10 +264,7 @@ if [ "$1" -eq "1" ]; then
   #/etc/init.d/nvidia start &>/dev/null ||:
   if [ -x /sbin/grubby ] ; then
     GRUBBYLASTKERNEL=`/sbin/grubby --default-kernel`
-    /sbin/grubby --update-kernel=${GRUBBYLASTKERNEL} --args='nouveau.modeset=0 rdblacklist=nouveau' &>/dev/null
-    if [ -x /usr/libexec/plymouth/plymouth-update-initrd ]; then
-      /usr/libexec/plymouth/plymouth-update-initrd
-    fi
+    /sbin/grubby --update-kernel=${GRUBBYLASTKERNEL} --args='nouveau.modeset=0 rd.driver.blacklist=nouveau' &>/dev/null
   fi
 fi || :
 
@@ -283,11 +285,8 @@ if [ "$1" -eq "0" ]; then
       KERNELS=`ls /boot/vmlinuz-*%{?dist}.$(uname -m)*`
       for kernel in ${KERNELS} ; do
       /sbin/grubby --update-kernel=${kernel} \
-        --remove-args='nouveau.modeset=0 rdblacklist=nouveau nomodeset' &>/dev/null
+        --remove-args='nouveau.modeset=0 rdblacklist=nouveau rd.driver.blacklist=nouveau nomodeset' &>/dev/null
       done
-      if [ -x /usr/libexec/plymouth/plymouth-update-initrd ]; then
-        /usr/libexec/plymouth/plymouth-update-initrd
-      fi
     fi
     #Backup and disable previously used xorg.conf
     [ -f %{_sysconfdir}/X11/xorg.conf ] && \
@@ -350,9 +349,17 @@ fi ||:
 
 
 %changelog
-* Thu Nov 10 2011 Arkady L. Shane <ashejn@russianfedora.ru> - 1:290.06-1.R
-- build 290.06 beta
-- added initramfs regeneration
+* Fri Jan  6 2012 Alexei Panov <me AT elemc DOT name> - 1:275.43-1.R
+- Downgrade/update to new stable release 275.45
+
+* Tue Nov 22 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:290.10-1
+- Update to 290.10
+
+* Thu Nov 10 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:290.06-2
+- Switch to rd.driver.blacklist from the deprecated rdblacklist on install
+
+* Wed Nov 09 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:290.06-1
+- Update to 290.06 beta
 
 * Tue Oct 04 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:285.05.09-1
 - Update to 285.05.09
