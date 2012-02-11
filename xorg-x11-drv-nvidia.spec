@@ -5,8 +5,8 @@
 %global	       __strip /bin/true
 
 Name:            xorg-x11-drv-nvidia
-Epoch:           2
-Version:         275.43
+Epoch:           1
+Version:         290.10
 Release:         1%{?dist}.R
 Summary:         NVIDIA's proprietary display driver for NVIDIA graphic cards
 
@@ -212,6 +212,10 @@ rm -f $RPM_BUILD_ROOT%{_mandir}/man1/{nvidia-settings,nvidia-xconfig}*
 # Make our documentation available for later
 cp -p %{SOURCE11} README.Fedora
 
+# Install prelink file
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/prelink.conf.d
+echo '-b /usr/lib/nvidia' > $RPM_BUILD_ROOT%{_sysconfdir}/prelink.conf.d/nvidia.conf
+
 # Make unversioned links to dynamic libs
 for lib in $( find $RPM_BUILD_ROOT%{_libdir} -name lib\*.%{version} ) ; do
  #ln -s libGL.so.256.52  $RPM_BUILD_ROOT%{nvidialibdir}/libGL.so
@@ -311,6 +315,8 @@ fi ||:
 %config %{_sysconfdir}/X11/xorg.conf.d/00-nvidia.conf
 %config(noreplace) %{_sysconfdir}/modprobe.d/blacklist-nouveau.conf
 %config(noreplace) %{_sysconfdir}/X11/nvidia-xorg.conf
+%dir %{_sysconfdir}/prelink.conf.d/
+%config(noreplace) %{_sysconfdir}/prelink.conf.d/nvidia.conf
 #{_initrddir}/nvidia
 %{_bindir}/nvidia-bug-report.sh
 %{_bindir}/nvidia-smi
@@ -349,8 +355,8 @@ fi ||:
 
 
 %changelog
-* Fri Jan  6 2012 Alexei Panov <me AT elemc DOT name> - 1:275.43-1.R
-- Downgrade/update to new stable release 275.45
+* Sat Feb 11 2012 Arkady L. Shane <ashejn@russianfedora.ru> - 1:290.10-1.R
+- added prelink config
 
 * Tue Nov 22 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:290.10-1
 - Update to 290.10
