@@ -6,8 +6,8 @@
 
 Name:            xorg-x11-drv-nvidia
 Epoch:           1
-Version:         290.10
-Release:         1%{?dist}.R
+Version:         295.33
+Release:         1%{?dist}
 Summary:         NVIDIA's proprietary display driver for NVIDIA graphic cards
 
 Group:           User Interface/X Hardware Support
@@ -355,6 +355,12 @@ fi ||:
 
 
 %changelog
+* Tue Mar 27 2012 Alexei Panov <me AT elemc DOT name> 1:295.33-1
+- New release
+
+* Thu Feb 23 2012 Alexei Panov <me AT elemc DOT name> - 1:295.20-1.R
+- Update to 295.20
+
 * Sat Feb 11 2012 Arkady L. Shane <ashejn@russianfedora.ru> - 1:290.10-1.R
 - added prelink config
 
