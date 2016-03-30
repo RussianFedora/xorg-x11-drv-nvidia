@@ -498,7 +498,9 @@ fi ||:
 %{_mandir}/man1/nvidia-cuda-mps-control.1.*
 %{_mandir}/man1/nvidia-persistenced.1.*
 %{_mandir}/man1/nvidia-modprobe.1.*
+%ifarch x86_64
 %{_mandir}/man1/nvidia-gridd.1.*
+%endif
 
 %files devel
 %defattr(-,root,root,-)
